@@ -6,4 +6,7 @@ export class BoardRead extends D1ReadEndpoint<HandleArgs> {
   _meta = {
     model: BoardModel,
   };
+  schema = {
+    tags: ["Boards"]
+  };
 }
