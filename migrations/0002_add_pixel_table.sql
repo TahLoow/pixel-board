@@ -4,7 +4,7 @@ CREATE TABLE IF NOT EXISTS board (
     width INTEGER NOT NULL,
     height INTEGER NOT NULL,
     is_complete BOOLEAN NOT NULL DEFAULT(FALSE),
-    created_at DATETIME NOT NULL DEFAULT(DATETIME())
+    created_at DATETIME NOT NULL DEFAULT (strftime('%Y-%m-%dT%H:%M:%SZ', 'now'))
 );
 
 CREATE TABLE IF NOT EXISTS pixel (
@@ -13,7 +13,7 @@ CREATE TABLE IF NOT EXISTS pixel (
     x INTEGER NOT NULL,
     y INTEGER NOT NULL,
     color INTEGER NOT NULL,
-    created_at DATETIME NOT NULL DEFAULT(DATETIME()),
+    created_at DATETIME NOT NULL DEFAULT (strftime('%Y-%m-%dT%H:%M:%SZ', 'now')),
 
     FOREIGN KEY(board_id) REFERENCES board(id)
 );
