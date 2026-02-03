@@ -7,7 +7,7 @@ export class BoardList extends D1ListEndpoint<HandleArgs> {
     model: BoardModel,
   };
   schema = {
-    tags: ["Boards"]
+    tags: ["Boards"],
   };
 
   searchFields = [];
