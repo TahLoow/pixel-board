@@ -55,7 +55,7 @@ Besides being able to see the OpenAPI schema (openapi.json) in the browser, you 
    ```
 4. Before deploying remotely, apply your database migrations to the production environment.
    ```bash
-   npx wrangler d1 migrations apply DB --local
+   npx wrangler d1 migrations apply DB --remote
    ```
 5. Push your Worker code to the Cloudflare network. ⚠️ This will make your changes live on the public internet
    ```bash
