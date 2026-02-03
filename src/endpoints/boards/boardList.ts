@@ -1,4 +1,4 @@
-import { D1ListEndpoint, RequestTypes, ResponseConfig } from "chanfana";
+import { D1ListEndpoint } from "chanfana";
 import { HandleArgs } from "../../types";
 import { BoardModel } from "./base";
 

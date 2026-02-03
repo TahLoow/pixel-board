@@ -35,18 +35,23 @@ export class BoardRead extends D1ReadEndpoint<HandleArgs> {
     }
 
     // 2. Execute your SQL query
-    const pixelQuery = "SELECT x, y, color FROM pixel WHERE board_id = ?";
+    const pixelQuery =
+      "SELECT position, color FROM (" +
+      "SELECT position, color, max(created_at) FROM pixel WHERE board_id = ? GROUP BY position" +
+      ")";
     const pixelResult = await db
       .prepare(pixelQuery)
       .bind(data.params.id) // Bind parameters to prevent SQL injection
       .all();
 
-    console.log(pixelResult);
     return {
-      id: data.params.id,
-      pixels: pixelResult.results,
-      // width: ,
-      // height: ,
+      success: true,
+      result: {
+        id: data.params.id,
+        pixels: pixelResult.results,
+        width: boardResult.width,
+        height: boardResult.height,
+      },
     };
   }
 }
