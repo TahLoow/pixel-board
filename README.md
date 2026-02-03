@@ -20,36 +20,48 @@ Besides being able to see the OpenAPI schema (openapi.json) in the browser, you 
 > [!IMPORTANT]
 > When using C3 to create this project, select "no" when it asks if you want to deploy. You need to follow this project's [setup steps](https://github.com/cloudflare/templates/tree/main/openapi-template#setup-steps) before deploying.
 
-## Getting Started
-
-Outside of this repo, you can start a new project with this template using [C3](https://developers.cloudflare.com/pages/get-started/c3/) (the `create-cloudflare` CLI):
-
-```bash
-npm create cloudflare@latest -- --template=cloudflare/templates/openapi-template
-```
-
-A live public deployment of this template is available at [https://openapi-template.templates.workers.dev](https://openapi-template.templates.workers.dev)
 
 ## Setup Steps
 
 1. Install the project dependencies with a package manager of your choice:
    ```bash
-   npm install
+   npm clean install
    ```
-2. Create a [D1 database](https://developers.cloudflare.com/d1/get-started/) with the name "openapi-template-db":
+2. Run the following db migration to initialize the SQLite database locally (notice the `migrations` directory in this project):
    ```bash
-   npx wrangler d1 create openapi-template-db
+   npx wrangler d1 migrations apply DB --local
    ```
-   ...and update the `database_id` field in `wrangler.json` with the new database ID.
-3. Run the following db migration to initialize the database (notice the `migrations` directory in this project):
+3. Run the project locally, which will start the database, backend, and documentation hosting.
+   ```bash
+   npx wrangler dev
+   ```
+   Terminal output:
+   ```plaintext
+   ⛅️ wrangler 4.56.0 (update available 4.62.0)
+   ─────────────────────────────────────────────
+   Your Worker has access to the following bindings:
+   Binding                      Resource         Mode
+   env.DB (pixel-board-db)      D1 Database      local
+
+   ╭──────────────────────╮
+   │  [b] open a browser  │
+   │  [d] open devtools   │
+   │  [c] clear console   │
+   │  [x] to exit         │
+   ╰──────────────────────╯
+   ⎔ Starting local server...
+   [wrangler:info] Ready on http://localhost:8787
+   [wrangler:info] GET /boards 200 OK (10ms)
+   ```
+4. Before deploying remotely, apply your database migrations to the production environment.
    ```bash
    npx wrangler d1 migrations apply DB --remote
    ```
-4. Deploy the project!
+5. Push your Worker code to the Cloudflare network. ⚠️ This will make your changes live on the public internet
    ```bash
    npx wrangler deploy
    ```
-5. Monitor your worker
+5. Stream live logs from your production Worker to verify everything is running smoothly.
    ```bash
    npx wrangler tail
    ```
