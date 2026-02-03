@@ -43,9 +43,9 @@ const openapi = fromHono(app, {
   docs_url: "/",
   schema: {
     info: {
-      title: "My Awesome API",
+      title: "Pixel Board API",
       version: "2.0.0",
-      description: "This is the documentation for my awesome API.",
+      description: "API page for a draw-by-pixel mini app.",
     },
   },
 });
