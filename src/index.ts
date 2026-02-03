@@ -2,9 +2,20 @@ import { ApiException, fromHono } from "chanfana";
 import { Hono } from "hono";
 import { ContentfulStatusCode } from "hono/utils/http-status";
 import { boardsRouter } from "./endpoints/boards/router";
+import { cors } from "hono/cors";
 
 // Start a Hono app
 const app = new Hono<{ Bindings: Env }>();
+
+app.use(
+  "/*", // Apply CORS to all routes
+  cors({
+    origin: ["http://localhost:5173"], // Allow requests from frontend localhost
+    allowHeaders: ["Content-Type", "Authorization", "User-Agent"], // Required headers
+    allowMethods: ["POST", "GET", "OPTIONS", "PUT", "DELETE", "PATCH"],
+    credentials: true,
+  }),
+);
 
 app.onError((err, c) => {
   if (err instanceof ApiException) {
