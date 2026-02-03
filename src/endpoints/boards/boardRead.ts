@@ -1,6 +1,6 @@
 import { D1ReadEndpoint } from "chanfana";
 import { AppContext, HandleArgs } from "../../types";
-import { BoardModel } from "./base";
+import { Board, BoardModel } from "./base";
 import z from "zod";
 
 export class BoardRead extends D1ReadEndpoint<HandleArgs> {
@@ -28,7 +28,7 @@ export class BoardRead extends D1ReadEndpoint<HandleArgs> {
     const boardResult = await db
       .prepare(boardQuery)
       .bind(data.params.id) // Bind parameters to prevent SQL injection
-      .first();
+      .first<Board>();
 
     if (!boardResult) {
       throw new Error("Board does not exist");

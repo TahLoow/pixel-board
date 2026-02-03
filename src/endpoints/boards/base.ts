@@ -36,3 +36,5 @@ export const BoardModel = {
   },
   serializerObject: board,
 };
+
+export type Board = z.infer<typeof BoardModel.schema>;
