@@ -42,16 +42,9 @@ export class PixelCreate extends D1UpdateEndpoint<HandleArgs> {
       .bind(data.params.id, data.body.position, data.body.color)
       .run();
 
-    console.log(response);
-
     return {
-      success: true,
-      result: {
-        id: data.params.id,
-        // pixels: pixelResult.results,
-        // width: boardResult.width,
-        // height: boardResult.height,
-      },
+      success: response.success,
+      result: null,
     };
   }
 }
