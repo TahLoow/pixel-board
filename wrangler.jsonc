@@ -12,5 +12,21 @@
 			"database_name": "pixel-board-db",
 			"database_id": "57ddb435-d46d-421e-a95b-27ba6e931e08"
 		}
+	],
+	"durable_objects": {
+    "bindings": [
+				{
+					"name": "PIXEL_BOARD_DURABLE_OBJECT",
+					"class_name": "PixelBoardDurableObject"
+				}
+		]
+  },
+	"migrations": [
+		{
+			"tag": "v1",
+			"new_classes": [
+				"PixelBoardDurableObject"
+			]
+		}
 	]
 }

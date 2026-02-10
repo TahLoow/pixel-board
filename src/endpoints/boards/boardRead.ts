@@ -2,6 +2,7 @@ import { D1ReadEndpoint } from "chanfana";
 import { AppContext, HandleArgs } from "../../types";
 import { Board, BoardModel } from "./base";
 import z from "zod";
+import PartySocket from "partysocket";
 
 export class BoardRead extends D1ReadEndpoint<HandleArgs> {
   _meta = {
@@ -43,6 +44,12 @@ export class BoardRead extends D1ReadEndpoint<HandleArgs> {
       .prepare(pixelQuery)
       .bind(data.params.id) // Bind parameters to prevent SQL injection
       .all();
+
+    const stub = c.env.PIXEL_BOARD_DURABLE_OBJECT.getByName(
+      new URL(c.req.url).pathname,
+    );
+
+    // const greeting = await stub;
 
     return {
       success: true,
