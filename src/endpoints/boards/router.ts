@@ -2,7 +2,7 @@ import { Hono } from "hono";
 import { fromHono } from "chanfana";
 import { BoardRead } from "./boardRead";
 import { BoardList } from "./boardList";
-import { PixelCreate } from "../pixel/pixelCreate";
+import { PixelCreate } from "./pixel/pixelCreate";
 
 export const boardsRouter = fromHono(new Hono());
 

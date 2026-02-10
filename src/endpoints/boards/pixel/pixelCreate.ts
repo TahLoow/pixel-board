@@ -1,7 +1,7 @@
 import { contentJson, D1UpdateEndpoint } from "chanfana";
 import { PixelModel } from "./base";
-import { AppContext, HandleArgs } from "../../types";
 import z from "zod";
+import { AppContext, HandleArgs } from "#src/types";
 
 export class PixelCreate extends D1UpdateEndpoint<HandleArgs> {
   _meta = {
