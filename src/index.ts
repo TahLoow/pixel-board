@@ -3,15 +3,12 @@ import { Hono } from "hono";
 import { ContentfulStatusCode } from "hono/utils/http-status";
 import { boardsRouter } from "./endpoints/boards/router";
 import { cors } from "hono/cors";
-import { DurableObject } from "cloudflare:workers";
-import { JSONValue } from "hono/utils/types";
+import { partyserverMiddleware } from "hono-party";
 
-import {
-  type Connection,
-  Server,
-  type WSMessage,
-  routePartykitRequest,
-} from "partyserver";
+export {
+  PixelBoardDurableObject,
+  // fetch,
+} from "./durable-object/PixelBoardDurableObject";
 
 export type ChatMessage = {
   id: string;
@@ -99,6 +96,8 @@ const openapi = fromHono(app, {
 // Register Boards Sub router
 openapi.route("/boards", boardsRouter);
 
+app.use("*", partyserverMiddleware());
+
 // Export the Hono app
 export default app;
 
@@ -113,88 +112,3 @@ export default app;
 //     return "Hello from Durable Object!";
 //   }
 // }
-
-export class PixelBoardDurableObject extends Server<Env> {
-  static options = { hibernate: true };
-
-  messages = [] as ChatMessage[];
-
-  broadcastMessage(message: Message, exclude?: string[]) {
-    this.broadcast(JSON.stringify(message), exclude);
-  }
-
-  onStart() {
-    // this is where you can initialize things that need to be done before the server starts
-    // for example, load previous messages from a database or a service
-
-    // const sql = fs.readFileSync('init_database.sql').toString();
-
-    console.log("PixelBoardDurableObject started");
-
-    // create the pixels table if it doesn't exist
-    // this.ctx.storage.sql.exec(
-    //   `CREATE TABLE IF NOT EXISTS messages (id TEXT PRIMARY KEY, user TEXT, role TEXT, content TEXT)`,
-    // );
-
-    // // load the messages from the database
-    // this.messages = this.ctx.storage.sql
-    //   .exec(`SELECT * FROM messages`)
-    //   .toArray() as ChatMessage[];
-  }
-
-  onConnect(connection: Connection) {
-    console.log("Connected to PixelBoardDurableObject");
-
-    connection.send(
-      JSON.stringify({
-        type: "all",
-        messages: [],
-      } satisfies Message),
-    );
-
-    // connection.send(
-    //   JSON.stringify({
-    //     type: "all",
-    //     messages: this.messages,
-    //   } satisfies Message),
-    // );
-  }
-
-  saveMessage(message: ChatMessage) {
-    console.log("Saving message:");
-    // check if the message already exists
-    // const existingMessage = this.messages.find((m) => m.id === message.id);
-    // if (existingMessage) {
-    //   this.messages = this.messages.map((m) => {
-    //     if (m.id === message.id) {
-    //       return message;
-    //     }
-    //     return m;
-    //   });
-    // } else {
-    //   this.messages.push(message);
-    // }
-
-    // this.ctx.storage.sql.exec(
-    //   `INSERT INTO messages (id, user, role, content) VALUES ('${
-    //     message.id
-    //   }', '${message.user}', '${message.role}', ${JSON.stringify(
-    //     message.content,
-    //   )}) ON CONFLICT (id) DO UPDATE SET content = ${JSON.stringify(
-    //     message.content,
-    //   )}`,
-    // );
-  }
-
-  onMessage(connection: Connection, message: WSMessage) {
-    console.log("Message received");
-    // let's broadcast the raw message to everyone else
-    // this.broadcast(message);
-
-    // // let's update our local messages store
-    // const parsed = JSON.parse(message as string) as Message;
-    // if (parsed.type === "add" || parsed.type === "update") {
-    //   this.saveMessage(parsed);
-    // }
-  }
-}

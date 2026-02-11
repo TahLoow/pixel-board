@@ -1,22 +1,4 @@
--- Migration number: 0001
-CREATE TABLE IF NOT EXISTS board (
-    id INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL,
-    width INTEGER NOT NULL,
-    height INTEGER NOT NULL,
-    is_complete BOOLEAN NOT NULL DEFAULT(FALSE),
-    created_at DATETIME NOT NULL DEFAULT (strftime('%Y-%m-%dT%H:%M:%SZ', 'now'))
-);
-
-CREATE TABLE IF NOT EXISTS pixel (
-    id INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL,
-    board_id INTEGER NOT NULL,
-    position INTEGER NOT NULL,
-    color INTEGER NOT NULL,
-
-    created_at DATETIME NOT NULL DEFAULT (strftime('%Y-%m-%dT%H:%M:%SZ', 'now')),
-    FOREIGN KEY(board_id) REFERENCES board(id)
-);
-
+export const starterBoard = `
 INSERT INTO board (width, height) VALUES (16, 10);
 
 INSERT INTO pixel (board_id, position, color) VALUES (1, 17, 1);
@@ -109,4 +91,4 @@ INSERT INTO pixel (board_id, position, color) VALUES (1, 155, 5);
 INSERT INTO pixel (board_id, position, color) VALUES (1, 156, 5);
 INSERT INTO pixel (board_id, position, color) VALUES (1, 157, 3);
 INSERT INTO pixel (board_id, position, color) VALUES (1, 158, 3);
-INSERT INTO pixel (board_id, position, color) VALUES (1, 159, 3);
+INSERT INTO pixel (board_id, position, color) VALUES (1, 159, 3);`;
