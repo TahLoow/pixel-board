@@ -31,7 +31,7 @@ export class PixelCreate extends OpenAPIRoute<HandleArgs> {
 
     const stub = c.env.PIXEL_BOARD_DURABLE_OBJECT.getByName("board");
 
-    stub.setPixel(data.params.id, data.body.position, data.body.color);
+    await stub.setPixel(data.params.id, data.body.position, data.body.color);
 
     return {
       success: true,
