@@ -79,63 +79,7 @@ export class PixelBoardDurableObject extends Server<Env> {
   }
 
   onStart() {
-    console.log("Server started");
-  }
-
-  onConnect(connection: Connection) {
-    console.log("Connected to PixelBoardDurableObject");
-
-    // connection.send(
-    //   JSON.stringify({
-    //     type: "all",
-    //     messages: [],
-    //   } satisfies Message),
-    // );
-
-    // connection.send(
-    //   JSON.stringify({
-    //     type: "all",
-    //     messages: this.messages,
-    //   } satisfies Message),
-    // );
-  }
-
-  saveMessage(message: ChatMessage) {
-    console.log("Saving message:");
-    // check if the message already exists
-    // const existingMessage = this.messages.find((m) => m.id === message.id);
-    // if (existingMessage) {
-    //   this.messages = this.messages.map((m) => {
-    //     if (m.id === message.id) {
-    //       return message;
-    //     }
-    //     return m;
-    //   });
-    // } else {
-    //   this.messages.push(message);
-    // }
-
-    // this.ctx.storage.sql.exec(
-    //   `INSERT INTO messages (id, user, role, content) VALUES ('${
-    //     message.id
-    //   }', '${message.user}', '${message.role}', ${JSON.stringify(
-    //     message.content,
-    //   )}) ON CONFLICT (id) DO UPDATE SET content = ${JSON.stringify(
-    //     message.content,
-    //   )}`,
-    // );
-  }
-
-  onMessage(connection: Connection, message: WSMessage) {
-    console.log("Message received");
-    // let's broadcast the raw message to everyone else
-    // this.broadcast(message);
-
-    // // let's update our local messages store
-    // const parsed = JSON.parse(message as string) as Message;
-    // if (parsed.type === "add" || parsed.type === "update") {
-    //   this.saveMessage(parsed);
-    // }
+    console.log("Partyserver started");
   }
 
   private async cacheBoard() {
@@ -181,17 +125,8 @@ export class PixelBoardDurableObject extends Server<Env> {
 
     this.cacheBoard();
 
-    return response.rowsWritten > 0;
-  }
+    this.broadcast(JSON.stringify({ boardId, position, color }));
 
-  logTables() {
-    console.log(5);
-    console.log(
-      this.ctx.storage.sql
-        .exec(
-          "SELECT name FROM sqlite_master WHERE type='table' ORDER BY name;",
-        )
-        .toArray(),
-    );
+    return response.rowsWritten > 0;
   }
 }

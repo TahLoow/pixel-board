@@ -4,6 +4,7 @@ import { ContentfulStatusCode } from "hono/utils/http-status";
 import { boardsRouter } from "./endpoints/boards/router";
 import { cors } from "hono/cors";
 import { partyserverMiddleware } from "hono-party";
+import { routePartykitRequest } from "partyserver";
 
 export {
   PixelBoardDurableObject,
@@ -96,19 +97,30 @@ const openapi = fromHono(app, {
 // Register Boards Sub router
 openapi.route("/boards", boardsRouter);
 
-app.use("*", partyserverMiddleware());
+// With custom routing
+app.use(
+  "*",
+  partyserverMiddleware({
+    options: {
+      prefix: "/party/parties/pixel-board-durable-object/board", // Handles /party/* routes only
+    },
+  }),
+);
 
-// Export the Hono app
-export default app;
+export default {
+  async fetch(
+    request: Request,
+    env: Env,
+    ctx: ExecutionContext,
+  ): Promise<Response> {
+    // Route partyserver requests, for websockets
+    const partyResponse = await routePartykitRequest(request, env);
 
-// Define methods for a Durable Object
-// export class PixelBoardDurableObject extends DurableObject<Env> {
-//   constructor(ctx: DurableObjectState, env: Env) {
-//     super(ctx, env);
-//   }
+    if (partyResponse) {
+      return partyResponse;
+    }
 
-//   async sayHello(request: Request): Promise<JSONValue> {
-//     console.log(request);
-//     return "Hello from Durable Object!";
-//   }
-// }
+    // If it's not a party request, let Hono handle it
+    return app.fetch(request, env, ctx);
+  },
+};

@@ -2,6 +2,7 @@ import { OpenAPIRoute } from "chanfana";
 import { BoardModel } from "./base";
 import z from "zod";
 import { AppContext, HandleArgs } from "#src/types";
+import PartySocket from "partysocket";
 
 export class BoardRead extends OpenAPIRoute<HandleArgs> {
   _meta = {

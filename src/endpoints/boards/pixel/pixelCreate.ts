@@ -28,7 +28,6 @@ export class PixelCreate extends D1UpdateEndpoint<HandleArgs> {
 
   public async handle(c: AppContext) {
     const data = await this.getValidatedData<typeof this.schema>();
-    // const data = await this.getValidatedData<typeof this.schema>();
 
     const stub = c.env.PIXEL_BOARD_DURABLE_OBJECT.getByName("board");
 
