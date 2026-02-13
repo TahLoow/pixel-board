@@ -48,7 +48,7 @@ app.use(
 
       // Allow requests from vercel previews
       const isPreview =
-        /^https:\/\/career-git-.*-pauls-projects-e01676e5\.vercel\.app$/.test(
+        /^https:\/\/career-.*-pauls-projects-e01676e5\.vercel\.app$/.test(
           origin,
         );
       if (isPreview) return origin;
