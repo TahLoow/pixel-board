@@ -61,7 +61,7 @@ export class PixelBoardDurableObject extends Server<Env> {
   }
 
   broadcastMessage(message: Message, exclude?: string[]) {
-    console.log("Broadcastingggg");
+    console.log("Broadcasting");
     this.broadcast(JSON.stringify(message), exclude);
   }
 
@@ -107,10 +107,12 @@ export class PixelBoardDurableObject extends Server<Env> {
   }
 
   getActiveBoard() {
+    console.log("Getting active board");
     return this.board;
   }
 
   async setPixel(boardId: number, position: number, color: number) {
+    console.log("Setting pixel");
     const setPixelQuery = `
       INSERT INTO pixel (board_id, position, color) 
       VALUES (?, ?, ?)
