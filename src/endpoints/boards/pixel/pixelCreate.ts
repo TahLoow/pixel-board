@@ -29,21 +29,12 @@ export class PixelCreate extends D1UpdateEndpoint<HandleArgs> {
   public async handle(c: AppContext) {
     const data = await this.getValidatedData<typeof this.schema>();
 
-    // 1. Access the D1 binding from the Hono context
-    const db = c.env.DB;
+    const stub = c.env.PIXEL_BOARD_DURABLE_OBJECT.getByName("board");
 
-    const query = `
-      INSERT INTO pixel (board_id, position, color) 
-      VALUES (?, ?, ?)
-    `;
-
-    const response = await db
-      .prepare(query)
-      .bind(data.params.id, data.body.position, data.body.color)
-      .run();
+    stub.setPixel(data.params.id, data.body.position, data.body.color);
 
     return {
-      success: response.success,
+      success: true,
       result: null,
     };
   }

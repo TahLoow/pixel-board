@@ -18,6 +18,9 @@
   "dependencies": {
     "chanfana": "2.8.3",
     "hono": "4.11.1",
+    "hono-party": "^1.0.0",
+    "partyserver": "^0.1.5",
+    "sqlite3": "^5.1.7",
     "zod": "3.25.67"
   },
   "devDependencies": {

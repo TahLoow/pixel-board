@@ -3,7 +3,7 @@ import { BoardModel } from "./base";
 import z from "zod";
 import { AppContext, HandleArgs } from "#src/types";
 
-export class BoardRead extends OpenAPIRoute<HandleArgs> {
+export class PixelStream extends OpenAPIRoute<HandleArgs> {
   _meta = {
     model: BoardModel,
   };
@@ -17,13 +17,16 @@ export class BoardRead extends OpenAPIRoute<HandleArgs> {
   };
 
   public async handle(c: AppContext) {
-    // const data = await this.getValidatedData<typeof this.schema>();
+    const data = await this.getValidatedData<typeof this.schema>();
+
+    // 1. Check if the request is trying to upgrade to WebSocket
+    if (c.req.header("upgrade") !== "websocket") {
+      console.log("upgrade");
+      return c.text("Expected Upgrade: websocket", 426);
+    }
 
     const stub = c.env.PIXEL_BOARD_DURABLE_OBJECT.getByName("board");
 
-    return {
-      success: true,
-      result: await stub.getActiveBoard(),
-    };
+    return stub.fetch(c.req.raw, { headers: { ["x-partykit-room"]: "board" } });
   }
 }

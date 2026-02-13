@@ -3,6 +3,40 @@ import { Hono } from "hono";
 import { ContentfulStatusCode } from "hono/utils/http-status";
 import { boardsRouter } from "./endpoints/boards/router";
 import { cors } from "hono/cors";
+import { partyserverMiddleware } from "hono-party";
+import { routePartykitRequest } from "partyserver";
+
+export {
+  PixelBoardDurableObject,
+  // fetch,
+} from "./durable-object/PixelBoardDurableObject";
+
+export type ChatMessage = {
+  id: string;
+  content: string;
+  user: string;
+  role: "user" | "assistant";
+};
+
+export type Message =
+  | {
+      type: "add";
+      id: string;
+      content: string;
+      user: string;
+      role: "user" | "assistant";
+    }
+  | {
+      type: "update";
+      id: string;
+      content: string;
+      user: string;
+      role: "user" | "assistant";
+    }
+  | {
+      type: "all";
+      messages: ChatMessage[];
+    };
 
 // Start a Hono app
 const app = new Hono<{ Bindings: Env }>();
@@ -63,5 +97,30 @@ const openapi = fromHono(app, {
 // Register Boards Sub router
 openapi.route("/boards", boardsRouter);
 
-// Export the Hono app
-export default app;
+// With custom routing
+app.use(
+  "*",
+  partyserverMiddleware({
+    options: {
+      prefix: "/party/parties/pixel-board-durable-object/board", // Handles /party/* routes only
+    },
+  }),
+);
+
+export default {
+  async fetch(
+    request: Request,
+    env: Env,
+    ctx: ExecutionContext,
+  ): Promise<Response> {
+    // Route partyserver requests, for websockets
+    const partyResponse = await routePartykitRequest(request, env);
+
+    if (partyResponse) {
+      return partyResponse;
+    }
+
+    // If it's not a party request, let Hono handle it
+    return app.fetch(request, env, ctx);
+  },
+};
