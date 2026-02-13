@@ -1,9 +1,9 @@
-import { contentJson, D1UpdateEndpoint } from "chanfana";
+import { contentJson, OpenAPIRoute } from "chanfana";
 import { PixelModel } from "./base";
 import z from "zod";
 import { AppContext, HandleArgs } from "#src/types";
 
-export class PixelCreate extends D1UpdateEndpoint<HandleArgs> {
+export class PixelCreate extends OpenAPIRoute<HandleArgs> {
   _meta = {
     model: PixelModel,
     fields: PixelModel.schema.pick({

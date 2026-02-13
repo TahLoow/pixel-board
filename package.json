@@ -1,11 +1,10 @@
 {
   "name": "pixel-board",
-  "description": "Complete backend API template using Hono + Chanfana + D1 + Vitest.",
+  "description": "A collaborative pixel-placing gamee. Hono + Chanfana + Vitest + PartyServer.",
   "cloudflare": {
     "label": "Backend OpenAPI Template",
     "products": [
-      "Workers",
-      "D1"
+      "Workers"
     ],
     "categories": [
       "storage"
@@ -18,7 +17,6 @@
   "dependencies": {
     "chanfana": "2.8.3",
     "hono": "4.11.1",
-    "hono-party": "^1.0.0",
     "partyserver": "^0.1.5",
     "sqlite3": "^5.1.7",
     "zod": "3.25.67"
@@ -35,9 +33,7 @@
     "cf-typegen": "wrangler types",
     "deploy": "wrangler deploy",
     "dev": "pnpm seedLocalDb && wrangler dev",
-    "predeploy": "wrangler d1 migrations apply DB --remote",
     "schema": "npx chanfana",
-    "seedLocalDb": "wrangler d1 migrations apply DB --local",
     "test": "wrangler deploy --dry-run && npx vitest run --config tests/vitest.config.mts"
   },
   "imports": {

@@ -3,7 +3,6 @@ import { Hono } from "hono";
 import { ContentfulStatusCode } from "hono/utils/http-status";
 import { boardsRouter } from "./endpoints/boards/router";
 import { cors } from "hono/cors";
-import { partyserverMiddleware } from "hono-party";
 import { routePartykitRequest } from "partyserver";
 
 export {
@@ -96,16 +95,6 @@ const openapi = fromHono(app, {
 
 // Register Boards Sub router
 openapi.route("/boards", boardsRouter);
-
-// With custom routing
-app.use(
-  "*",
-  partyserverMiddleware({
-    options: {
-      prefix: "/party/parties/pixel-board-durable-object/board", // Handles /party/* routes only
-    },
-  }),
-);
 
 export default {
   async fetch(
