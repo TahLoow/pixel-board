@@ -20,7 +20,9 @@ app.use(
         );
       if (isPreview) return origin;
 
-      const isProd = origin === "paul-maclean.com";
+      console.log(origin);
+
+      const isProd = origin === "https://paul-maclean.com";
       if (isProd) return origin;
 
       return null;
