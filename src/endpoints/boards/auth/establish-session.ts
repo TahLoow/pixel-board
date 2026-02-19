@@ -40,14 +40,15 @@ export class EstablishSession extends OpenAPIRoute {
       secure: true,
       httpOnly: true,
       maxAge: Number(c.env.JWT_MAX_AGE), // Session valid for 1 hour
-      sameSite: "Lax",
+      sameSite: "None",
       domain: undefined,
     };
 
-    if (!c.get("isLocalEnvironment")) {
-      // Account for api subdomain prefix
-      const hostname = new URL(c.req.url).hostname;
+    const hostname = new URL(c.req.url).hostname;
+
+    if (c.get("isProduction")) {
       cookieOptions.domain = hostname.substring(hostname.indexOf("."));
+      cookieOptions.sameSite = "Strict";
     }
 
     // Turnstile passed, create a session cookie.

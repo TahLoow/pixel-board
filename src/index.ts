@@ -77,8 +77,12 @@ openapi.use("*", async (c: Context, next: Next) => {
   const host = c.req.header("host");
 
   const isLocal = host?.includes("localhost") || host?.includes("127.0.0.1");
+  const isProduction = !isLocal && !host?.includes("vercel.app");
+  const isDemo = !isLocal && !isProduction;
 
   c.set("isLocalEnvironment", isLocal);
+  c.set("isProduction", isProduction);
+  c.set("isDemo", isDemo);
   return next();
 });
 openapi.use("*", authGuard);
