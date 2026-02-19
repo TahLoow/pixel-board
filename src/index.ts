@@ -30,34 +30,8 @@ app.use(
         );
       if (isPreview) return origin;
 
-      console.log(origin);
-
-      const isProd = origin === "paul-maclean.com";
-      if (isProd) return origin;
-
-      return null;
-    },
-    allowHeaders: ["Content-Type", "Authorization", "User-Agent"], // Required headers
-    allowMethods: ["POST", "GET", "OPTIONS", "PUT", "DELETE", "PATCH"],
-    credentials: true,
-  }),
-);
-
-app.use(
-  "/*", // Apply CORS to all routes
-  cors({
-    origin: (origin) => {
-      if (origin === "http://localhost:5173") return origin; // Allow requests from frontend localhost
-
-      // Allow requests from vercel previews
-      const isPreview =
-        /^https:\/\/career-.*-pauls-projects-e01676e5\.vercel\.app$/.test(
-          origin,
-        );
-      if (isPreview) return origin;
-
-      console.log(origin);
       console.log("1");
+      console.log(origin);
 
       const isProd = origin === "https://paul-maclean.com";
       console.log(isProd);
