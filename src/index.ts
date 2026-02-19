@@ -79,6 +79,11 @@ openapi.use("*", async (c: Context, next: Next) => {
   const isLocal = host?.includes("localhost") || host?.includes("127.0.0.1");
   const isProduction = !isLocal && !host?.includes("vercel.app");
   const isDemo = !isLocal && !isProduction;
+  console.log(host);
+
+  console.log("isLocal: " + isLocal);
+  console.log("isProduction: " + isProduction);
+  console.log("isDemo: " + isDemo);
 
   c.set("isLocalEnvironment", isLocal);
   c.set("isProduction", isProduction);
