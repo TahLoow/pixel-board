@@ -6,11 +6,30 @@
 	"observability": {
 		"enabled": true
 	},
-	"d1_databases": [
+	"durable_objects": {
+    "bindings": [
+				{
+					"name": "PIXEL_BOARD_DURABLE_OBJECT",
+					"class_name": "PixelBoardDurableObject"
+				}
+		]
+  },
+	"migrations": [
 		{
-			"binding": "DB",
-			"database_name": "pixel-board-db",
-			"database_id": "57ddb435-d46d-421e-a95b-27ba6e931e08"
+			"tag": "v1",
+			"new_sqlite_classes": [
+				"PixelBoardDurableObject"
+			]
 		}
-	]
+	],
+	"compatibility_flags": [
+    "nodejs_compat"
+  ],
+	"rules": [
+    {
+      "type": "Text",
+      "globs": ["**/*.sql"],
+      "fallthrough": true
+    }
+  ]
 }

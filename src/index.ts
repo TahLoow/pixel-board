@@ -1,11 +1,21 @@
 import { ApiException, fromHono } from "chanfana";
-import { Hono } from "hono";
+import { Context, Hono, Next } from "hono";
 import { ContentfulStatusCode } from "hono/utils/http-status";
 import { boardsRouter } from "./endpoints/boards/router";
 import { cors } from "hono/cors";
+import { routePartykitRequest } from "partyserver";
+import { HTTPException } from "hono/http-exception";
+import { EstablishSession } from "./endpoints/boards/auth/establish-session";
+import { authGuard } from "./services/auth/auth-guard";
+
+export { PixelBoardDurableObject } from "./durable-object/PixelBoardDurableObject";
+
+type Variables = {
+  isLocalEnvironment: boolean;
+};
 
 // Start a Hono app
-const app = new Hono<{ Bindings: Env }>();
+const app = new Hono<{ Bindings: Env; Variables: Variables }>();
 
 app.use(
   "/*", // Apply CORS to all routes
@@ -19,12 +29,6 @@ app.use(
           origin,
         );
       if (isPreview) return origin;
-
-      console.log(origin);
-
-      const isProd = origin === "https://paul-maclean.com";
-      if (isProd) return origin;
-
       return null;
     },
     allowHeaders: ["Content-Type", "Authorization", "User-Agent"], // Required headers
@@ -40,6 +44,8 @@ app.onError((err, c) => {
       { success: false, errors: err.buildResponse() },
       err.status as ContentfulStatusCode,
     );
+  } else if (err instanceof HTTPException) {
+    return c.json({ success: false, error: err.message }, err.status);
   }
 
   console.error("Global error handler caught:", err); // Log the error if it's not known
@@ -66,8 +72,44 @@ const openapi = fromHono(app, {
   },
 });
 
-// Register Boards Sub router
-openapi.route("/boards", boardsRouter);
+// Protect endpoints with auth
+openapi.use("*", async (c: Context, next: Next) => {
+  const host = c.req.header("host");
 
-// Export the Hono app
-export default app;
+  const isLocal = host?.includes("localhost") || host?.includes("127.0.0.1");
+  const isProduction = !isLocal && !host?.includes("vercel.app");
+  const isDemo = !isLocal && !isProduction;
+  // console.log(host);
+
+  // console.log("isLocal: " + isLocal);
+  // console.log("isProduction: " + isProduction);
+  // console.log("isDemo: " + isDemo);
+
+  // c.set("isLocalEnvironment", isLocal);
+  // c.set("isProduction", isProduction);
+  // c.set("isDemo", isDemo);
+  return next();
+});
+openapi.use("*", authGuard);
+
+// Register routes/routers
+openapi.route("/boards", boardsRouter);
+openapi.post("/auth/verify", EstablishSession);
+
+export default {
+  async fetch(
+    request: Request,
+    env: Env,
+    ctx: ExecutionContext,
+  ): Promise<Response> {
+    // Route partyserver requests, for websockets
+    const partyResponse = await routePartykitRequest(request, env);
+
+    if (partyResponse) {
+      return partyResponse;
+    }
+
+    // If it's not a party request, let Hono handle it
+    return app.fetch(request, env, ctx);
+  },
+};
