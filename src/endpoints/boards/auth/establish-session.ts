@@ -48,7 +48,8 @@ export class EstablishSession extends OpenAPIRoute {
 
     if (c.get("isProduction")) {
       cookieOptions.domain = hostname.substring(hostname.indexOf("."));
-      cookieOptions.sameSite = "Strict";
+      // Would be nice to update sameSite. Can't differentiate prod/test, currently
+      // cookieOptions.sameSite = "Strict";
     }
 
     // Turnstile passed, create a session cookie.

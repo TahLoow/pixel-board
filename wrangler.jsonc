@@ -31,13 +31,5 @@
       "globs": ["**/*.sql"],
       "fallthrough": true
     }
-  ],
-	"env": {
-		"production": {
-			"route": "api.paul-maclean.com"
-		},
-    "demo": {
-      "route": "demo.api.paul-maclean.com"
-    }
-  }
+  ]
 }
