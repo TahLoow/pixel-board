@@ -1,7 +1,8 @@
-import { Connection, Server, WSMessage } from "partyserver";
-import { ChatMessage, Message } from "..";
+import { Server } from "partyserver";
 import { starterBoard } from "./starter-board";
 import { Board } from "#src/endpoints/boards/base";
+
+type Message = { boardId: number; position: number; color: number };
 
 interface BoardStatePixel {
   position: number;
@@ -17,8 +18,6 @@ interface BoardState {
 
 export class PixelBoardDurableObject extends Server<Env> {
   static options = { hibernate: false };
-
-  messages = [] as ChatMessage[];
 
   board!: BoardState;
 
@@ -61,7 +60,6 @@ export class PixelBoardDurableObject extends Server<Env> {
   }
 
   broadcastMessage(message: Message, exclude?: string[]) {
-    console.log("Broadcasting");
     this.broadcast(JSON.stringify(message), exclude);
   }
 
@@ -72,9 +70,7 @@ export class PixelBoardDurableObject extends Server<Env> {
 
     if (!boards.length) {
       this.ctx.storage.sql.exec(starterBoard);
-      console.log("Seeded board");
-    } else {
-      console.log("Did not seed board; board exists in DB");
+      console.log("No boards in DB; seeding board");
     }
   }
 
@@ -107,12 +103,14 @@ export class PixelBoardDurableObject extends Server<Env> {
   }
 
   getActiveBoard() {
-    console.log("Getting active board");
     return this.board;
   }
 
   async setPixel(boardId: number, position: number, color: number) {
-    console.log("Setting pixel");
+    if (position > this.board.height * this.board.width - 1) {
+      throw new Error("Pixel placement exceeds board size");
+    }
+
     const setPixelQuery = `
       INSERT INTO pixel (board_id, position, color) 
       VALUES (?, ?, ?)

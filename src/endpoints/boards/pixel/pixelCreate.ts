@@ -1,7 +1,8 @@
 import { contentJson, OpenAPIRoute } from "chanfana";
 import { PixelModel } from "./base";
 import z from "zod";
-import { AppContext, HandleArgs } from "#src/types";
+import { HandleArgs } from "#src/types";
+import { Context } from "hono";
 
 export class PixelCreate extends OpenAPIRoute<HandleArgs> {
   _meta = {
@@ -26,11 +27,10 @@ export class PixelCreate extends OpenAPIRoute<HandleArgs> {
     },
   };
 
-  public async handle(c: AppContext) {
+  public async handle(c: Context) {
     const data = await this.getValidatedData<typeof this.schema>();
 
     const stub = c.env.PIXEL_BOARD_DURABLE_OBJECT.getByName("board");
-
     await stub.setPixel(data.params.id, data.body.position, data.body.color);
 
     return {

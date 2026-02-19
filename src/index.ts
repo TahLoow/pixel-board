@@ -1,44 +1,21 @@
 import { ApiException, fromHono } from "chanfana";
-import { Hono } from "hono";
+import { Context, Hono, Next } from "hono";
 import { ContentfulStatusCode } from "hono/utils/http-status";
 import { boardsRouter } from "./endpoints/boards/router";
 import { cors } from "hono/cors";
 import { routePartykitRequest } from "partyserver";
+import { HTTPException } from "hono/http-exception";
+import { EstablishSession } from "./endpoints/boards/auth/establish-session";
+import { authGuard } from "./services/auth/auth-guard";
 
-export {
-  PixelBoardDurableObject,
-  // fetch,
-} from "./durable-object/PixelBoardDurableObject";
+export { PixelBoardDurableObject } from "./durable-object/PixelBoardDurableObject";
 
-export type ChatMessage = {
-  id: string;
-  content: string;
-  user: string;
-  role: "user" | "assistant";
+type Variables = {
+  isLocalEnvironment: boolean;
 };
 
-export type Message =
-  | {
-      type: "add";
-      id: string;
-      content: string;
-      user: string;
-      role: "user" | "assistant";
-    }
-  | {
-      type: "update";
-      id: string;
-      content: string;
-      user: string;
-      role: "user" | "assistant";
-    }
-  | {
-      type: "all";
-      messages: ChatMessage[];
-    };
-
 // Start a Hono app
-const app = new Hono<{ Bindings: Env }>();
+const app = new Hono<{ Bindings: Env; Variables: Variables }>();
 
 app.use(
   "/*", // Apply CORS to all routes
@@ -67,6 +44,8 @@ app.onError((err, c) => {
       { success: false, errors: err.buildResponse() },
       err.status as ContentfulStatusCode,
     );
+  } else if (err instanceof HTTPException) {
+    return c.json({ success: false, error: err.message }, err.status);
   }
 
   console.error("Global error handler caught:", err); // Log the error if it's not known
@@ -93,8 +72,20 @@ const openapi = fromHono(app, {
   },
 });
 
-// Register Boards Sub router
+// Protect endpoints with auth
+openapi.use("*", async (c: Context, next: Next) => {
+  const host = c.req.header("host");
+
+  const isLocal = host?.includes("localhost") || host?.includes("127.0.0.1");
+
+  c.set("isLocalEnvironment", isLocal);
+  return next();
+});
+openapi.use("*", authGuard);
+
+// Register routes/routers
 openapi.route("/boards", boardsRouter);
+openapi.post("/auth/verify", EstablishSession);
 
 export default {
   async fetch(

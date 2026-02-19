@@ -31,5 +31,5 @@
       "globs": ["**/*.sql"],
       "fallthrough": true
     }
-  ]
+  ],
 }

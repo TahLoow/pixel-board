@@ -1,7 +1,8 @@
 import { OpenAPIRoute } from "chanfana";
 import { BoardModel } from "./base";
 import z from "zod";
-import { AppContext, HandleArgs } from "#src/types";
+import { HandleArgs } from "#src/types";
+import { Context } from "hono";
 
 export class BoardRead extends OpenAPIRoute<HandleArgs> {
   _meta = {
@@ -16,9 +17,8 @@ export class BoardRead extends OpenAPIRoute<HandleArgs> {
     },
   };
 
-  public async handle(c: AppContext) {
-    // const data = await this.getValidatedData<typeof this.schema>();
-
+  public async handle(c: Context) {
+    // Process the request
     const stub = c.env.PIXEL_BOARD_DURABLE_OBJECT.getByName("board");
 
     return {
