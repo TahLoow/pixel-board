@@ -30,11 +30,7 @@ app.use(
         );
       if (isPreview) return origin;
 
-      console.log("1");
-      console.log(origin);
-
-      const isProd = origin === "https://paul-maclean.com";
-      console.log(isProd);
+      const isProd = origin === "https://www.paul-maclean.com";
       if (isProd) return origin;
 
       return null;
@@ -80,24 +76,16 @@ const openapi = fromHono(app, {
   },
 });
 
-// Protect endpoints with auth
+// TODO: Set environment
 openapi.use("*", async (c: Context, next: Next) => {
-  const host = c.req.header("host");
-
-  const isLocal = host?.includes("localhost") || host?.includes("127.0.0.1");
-  const isProduction = !isLocal && !host?.includes("vercel.app");
-  const isDemo = !isLocal && !isProduction;
-  // console.log(host);
-
-  // console.log("isLocal: " + isLocal);
-  // console.log("isProduction: " + isProduction);
-  // console.log("isDemo: " + isDemo);
-
-  // c.set("isLocalEnvironment", isLocal);
-  // c.set("isProduction", isProduction);
-  // c.set("isDemo", isDemo);
+  // const host = c.req.header("host");
+  // const isLocal = host?.includes("localhost") || host?.includes("127.0.0.1");
+  // const isProduction = !isLocal && !host?.includes("vercel.app");
+  // const isDemo = !isLocal && !isProduction;
   return next();
 });
+
+// Protect endpoints with auth
 openapi.use("*", authGuard);
 
 // Register routes/routers

@@ -44,13 +44,13 @@ export class EstablishSession extends OpenAPIRoute {
       domain: undefined,
     };
 
-    const hostname = new URL(c.req.url).hostname;
+    // Would be nice to update sameSite. Can't differentiate prod/test, currently
+    // const hostname = new URL(c.req.url).hostname;
 
-    if (c.get("isProduction")) {
-      cookieOptions.domain = hostname.substring(hostname.indexOf("."));
-      // Would be nice to update sameSite. Can't differentiate prod/test, currently
-      // cookieOptions.sameSite = "Strict";
-    }
+    // if (c.get("isProduction")) {
+    //   cookieOptions.domain = hostname.substring(hostname.indexOf("."));
+    //   // cookieOptions.sameSite = "Strict";
+    // }
 
     // Turnstile passed, create a session cookie.
     setCookie(c, "turnstile_session", jwt, cookieOptions);
