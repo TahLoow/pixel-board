@@ -1,10 +1,18 @@
-# Pixel Board Worker
+# Pixel Board
 
 <!-- dash-content-start -->
-
-This project is a collaborative, realtime, pixel-placing interactive game. Users can place pixels onto a board, and see live updates from others. The project uses a Cloudflare Worker with OpenAPI 3.1 Auto Generation and Validation using [chanfana](https://github.com/cloudflare/chanfana) and [Hono](https://github.com/honojs/hono). This project also uses a Cloudflare Durable Object to cache and stream game board states.
+<p align="center">
+<img width="621" height="393" alt="banner" src="https://github.com/user-attachments/assets/b1e2b13c-ad57-4c23-aa9a-8d0a7fcb4485" />
+</p>
+The Pixel Board is a collaborative, realtime, pixel-placing interactive game. Users can place pixels onto a board, and see live updates from others. This repository contains the backend logic, is the form of a serverless [Cloudflare Worker](https://developers.cloudflare.com/workers/) + [Durable Object](https://developers.cloudflare.com/durable-objects/). You can read more about my learning experience [here](https://www.paul-maclean.com/posts/pixel-board).
 
 <!-- dash-content-end -->
+
+## Architecture
+
+The project uses a Cloudflare Worker with OpenAPI 3.1 Auto Generation and Validation using [chanfana](https://github.com/cloudflare/chanfana) for swagger integration, and [Hono](https://github.com/honojs/hono) as the client-facing server. The data source for the pixel board is a Durable Object, which caches the board state, and streams game board updates via [Partyserver](https://github.com/cloudflare/partykit.git).
+
+<img width="3288" height="1164" alt="image" src="https://github.com/user-attachments/assets/107e3184-a1a5-4161-be70-653ae1cdf0e6" />
 
 ## Setup Steps
 
