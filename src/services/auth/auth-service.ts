@@ -34,6 +34,8 @@ export class AuthService {
       },
     );
 
+    console.log(result)
+
     const outcome = (await result.json()) as SiteverifyApiResponse;
 
     if (!outcome.success) {

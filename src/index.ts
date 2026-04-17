@@ -7,6 +7,7 @@ import { routePartykitRequest } from "partyserver";
 import { HTTPException } from "hono/http-exception";
 import { EstablishSession } from "./endpoints/boards/auth/establish-session";
 import { authGuard } from "./services/auth/auth-guard";
+import { scrobbleRouter } from "./endpoints/scrobble/router";
 
 export { PixelBoardDurableObject } from "./durable-object/PixelBoardDurableObject";
 
@@ -85,12 +86,16 @@ openapi.use("*", async (c: Context, next: Next) => {
   return next();
 });
 
-// Protect endpoints with auth
-openapi.use("*", authGuard);
-
-// Register routes/routers
+// Pixel board APIs + auth guard
 openapi.route("/boards", boardsRouter);
+
+// Auth APIs and guards
+openapi.use("/boards", authGuard);
 openapi.post("/auth/verify", EstablishSession);
+
+// Scrobble APIs
+openapi.route("/scrobble", scrobbleRouter);
+
 
 export default {
   async fetch(
