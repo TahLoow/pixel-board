@@ -1,6 +1,6 @@
 {
-  "name": "pixel-board",
-  "description": "A collaborative pixel-placing gamee. Hono + Chanfana + Vitest + PartyServer.",
+  "name": "personal-site-backend",
+  "description": "The backend for Paul's personal site. Includes a collaborative pixel-placing game and music scrobbler. Hono + Chanfana + Vitest + PartyServer.",
   "cloudflare": {
     "label": "Backend OpenAPI Template",
     "products": [
