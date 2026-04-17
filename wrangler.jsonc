@@ -1,35 +1,44 @@
 {
-	"compatibility_date": "2025-10-08",
-	"main": "src/index.ts",
-	"name": "personal-site-backend",
-	"upload_source_maps": true,
-	"observability": {
-		"enabled": true
-	},
-	"durable_objects": {
-    "bindings": [
-				{
-					"name": "PIXEL_BOARD_DURABLE_OBJECT",
-					"class_name": "PixelBoardDurableObject"
-				}
-		]
+  "compatibility_date": "2025-10-08",
+  "main": "src/index.ts",
+  "name": "personal-site-backend",
+  "upload_source_maps": true,
+  "observability": {
+    "enabled": true,
   },
-	"migrations": [
-		{
-			"tag": "v1",
-			"new_sqlite_classes": [
-				"PixelBoardDurableObject"
-			]
-		}
-	],
-	"compatibility_flags": [
-    "nodejs_compat"
+  "preview_urls": true,
+  "workers_dev": true,
+  "durable_objects": {
+    "bindings": [
+      {
+        "name": "PIXEL_BOARD_DURABLE_OBJECT",
+        "class_name": "PixelBoardDurableObject",
+      },
+    ],
+  },
+  "routes": [
+    {
+      "pattern": "api.paul-maclean.com",
+      "zone_name": "paul-maclean.com",
+      "custom_domain": true,
+    },
   ],
-	"rules": [
+  "vars": {
+    "JWT_MAX_AGE": "3600",
+    "LAST_FM_USER_NAME": "WahTool",
+  },
+  "migrations": [
+    {
+      "tag": "v1",
+      "new_sqlite_classes": ["PixelBoardDurableObject"],
+    },
+  ],
+  "compatibility_flags": ["nodejs_compat"],
+  "rules": [
     {
       "type": "Text",
       "globs": ["**/*.sql"],
-      "fallthrough": true
-    }
-  ]
+      "fallthrough": true,
+    },
+  ],
 }
